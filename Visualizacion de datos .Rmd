@@ -1,0 +1,79 @@
+---
+title: "Visualizacion de Datos con ggplot2"
+author: "Lavinia Lavin"
+date: "2024-08-06"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Este es el script para el taller de Introduccion a visualizacion de datos: 
+Comenzamos con los requisitos
+```{r,eval=FALSE}
+install.packages("tidyverse")
+install.packages("ggplot2")
+```
+
+## Llamar de la libreria ggplot2, con este paquete estaremos trabajando:
+
+
+
+```{r pressure, echo=TRUE}
+library(ggplot2)
+```
+
+Vamos a trabajar con el data frame que ggplot ofrece donde podemos observar una serie de datos que corresponden a las caracteristicas de autos, incluyendo displ (tamaño de motor) y hwy (eficiencia de kilometraje)
+```{r, echo=TRUE}
+ggplot2::mpg
+print(mpg)
+```
+Comenzaremos con nuestra primera tabla, simple; comenzamos con la funcion ggplot() SIEMPRE, esto nos permite coordinar sistemas para añadir capas. Los datos los llamamos con la funcion data=mpg ya que estamos trabajando con la base de datos mpg, geom_point() nos da la capacidad de trabajar con puntos en la tabla, esto nos crea un scatter plot (o un grafico disperso). El argumento mapping siempre va acompañado de aes(), esto nos va a permitir definir el eje x y y
+```{r, echo=TRUE}
+ggplot(data=mpg)+
+  geom_point(mapping = aes(x=displ, y=hwy))
+```
+Ahora vamos a pasar a hacer un plot un poco mas complejo donde geom_smooth() es una capa que permite diferenciar la tendencia de la distirbucion de los datos
+```{r, echo=TRUE}
+ggplot(data=mpg, mapping = aes(x=displ, y=hwy))+
+  geom_point(mapping = aes(color=class))+
+  geom_smooth()
+```
+Pero con R nos podemos facilitar la vida, existe un paquete llamado esquisse que permite jugar con lo datos, vamos a probarlo usando la funcion esquisser()
+```{r,eval=FALSE}
+install.packages("esquisse")
+library(esquisse)
+esquisser()
+```
+Podemos hacer graficos dinamicos usando la paqueteria de "plotly"
+llamamos al objeto de la grafica que vamos a crear, en este caso vamos a añadir titulos a los ejes 
+El objeto se llamara p, para observarlo solo incluimos el objeto p
+
+
+```{r,eval=FALSE}
+install.packages("plotly")
+library(plotly)
+p <- ggplot(mpg, aes(x = displ, y = hwy, color = class, text = paste("Fabricante: ", manufacturer, "<br>Modelo: ", model))) +
+  geom_point(size = 3) +
+  labs(
+    title = "Relación entre Desplazamiento del Motor y Eficiencia de Combustible",
+    x = "Desplazamiento del Motor (litros)",
+    y = "Millas por Galón en Carretera (hwy)",
+    color = "Clase de Vehículo"
+  ) +
+  theme_minimal()
+p
+```
+Nos da como resultado esta grafica, entonces para hacerla dinamica usamos el comando p_interactive y tooltip para mostrar lo que queremos que se vea cuando movamos el cursor
+```{r, eval=FALSE}
+p_interactive <- ggplotly(p, tooltip = "text")
+```
+Llamamos al objeto que creamos y tenemos nuestro grafico dinamico!
+```{r, eval=TRUE}
+p_interactive
+```
+
